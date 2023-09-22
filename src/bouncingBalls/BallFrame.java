@@ -112,15 +112,16 @@ public class BallFrame extends JFrame implements ActionListener, ChangeListener 
   }
 
   //Code for creating a Ball and a thread
-  public void createBall() {
-    randomX = randomNumber(BALL_FRAME_WIDTH);
-    randomY = randomNumber(BALL_FRAME_HEIGHT);
-    Ball b = new Ball(randomX, randomY, BALL_SIZE, randomColour());
-    component.addBall(b);
-    Runnable r = new BallRunnable(b, component, this);
-    component.repaint();
-    Thread t = new Thread(r);
-    t.start();
+  private void createBall() {
+      randomX = randomNumber(BALL_FRAME_WIDTH);
+      randomY = randomNumber(BALL_FRAME_HEIGHT);
+      Ball b = new Ball(randomX, randomY, BALL_SIZE, randomColour());
+      component.addBall(b);
+      ArrayList<Ball> balls = component.getArray(); 
+      Runnable r = new BallRunnable(b, component, this, balls); 
+      component.repaint();
+      Thread t = new Thread(r);
+      t.start();
   }
   
   public boolean getstopThreads() {
