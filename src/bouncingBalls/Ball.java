@@ -6,6 +6,7 @@ import javax.swing.*;
 import java.awt.BorderLayout;
 import java.awt.*;
 import java.awt.geom.*;
+import java.util.ArrayList;
 
 public class Ball {
 
@@ -33,20 +34,39 @@ public class Ball {
     return (int) originY;
   }
 
-  public void moveBall(BallFrame f) {
-    maxWidth = f.getFrameWidth()-(ballWidth);
-    maxHeight = f.getFrameHeight()-(ballWidth);
+  public void moveBall(BallFrame f, ArrayList<Ball> balls) {
+      maxWidth = f.getFrameWidth() - (ballWidth);
+      maxHeight = f.getFrameHeight() - (ballWidth);
 
-    if (BallFrame.running == true){
-      if (originX == maxWidth || originX == 0) {
-        dx = -dx;
+      if (BallFrame.running == true) {
+          // Check for collisions with the frame boundaries
+          if (originX + ballWidth >= maxWidth || originX <= 0) {
+              dx = -dx;
+          }
+          if (originY + ballWidth >= maxHeight || originY <= 0) {
+              dy = -dy;
+          }
+
+          // Check for collisions with other balls
+          for (Ball otherBall : balls) {
+              if (otherBall != this) {
+                  double otherX = otherBall.getX();
+                  double otherY = otherBall.getY();
+                  double distance = Math.sqrt(Math.pow(otherX - originX, 2) + Math.pow(otherY - originY, 2));
+
+                  if (distance <= ballWidth) {
+                      // Collided with another ball, reverse directions
+                      dx = -dx;
+                      dy = -dy;
+                      otherBall.dx = -otherBall.dx;
+                      otherBall.dy = -otherBall.dy;
+                  }
+              }
+          }
+
+          originX += dx;
+          originY += dy;
       }
-      if (originY == 0 || originY == maxHeight) {
-        dy = -dy;
-      }
-      originX += + dx;
-      originY += + dy;
-    }
   }
 
   public void draw(Graphics2D g2) {
